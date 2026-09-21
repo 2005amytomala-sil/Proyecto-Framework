@@ -1,0 +1,31 @@
+# Node (Frontend)
+**/node_modules/
+**/dist/
+
+# Go (Backend)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+Unidad2_Backend/multicatalogo-backend/multicatalogo-backend
+
+# Entorno y logs
+.env
+*.log
+.DS_Store# Node (Frontend)
+**/node_modules/
+**/dist/
+
+# Go (Backend)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+Unidad2_Backend/multicatalogo-backend/multicatalogo-backend
+
+# Entorno y logs
+.env
+*.log
+.DS_Store
