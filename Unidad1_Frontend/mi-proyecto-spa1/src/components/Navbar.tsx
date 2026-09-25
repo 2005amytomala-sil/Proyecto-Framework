@@ -1,13 +1,15 @@
-// src/components/Navbar.tsx
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { useUI } from "../context/UIContext";
 
-const Navbar = () => {
+// Definimos la interfaz para las props
+interface NavbarProps {
+  toggleSidebar: () => void;
+}
+
+const Navbar = ({ toggleSidebar }: NavbarProps) => {
   const { totalItems } = useCart();
-  const { logout, userEmail } = useAuth();
-  const { toggleSidebar } = useUI();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,29 +18,27 @@ const Navbar = () => {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shrink-0">
-      {/* Izquierda: Botón Toggle y Título */}
-      <div className="flex items-center gap-3">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8">
+      <div className="flex items-center gap-2 md:gap-4">
+        {/* Botón Hamburguesa siempre visible */}
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-lg hover:bg-slate-100 transition text-slate-700 text-xl focus:outline-none focus:ring-2 focus:ring-slate-300"
-          title="Mostrar u ocultar menú"
-          aria-label="Alternar menú lateral"
+          className="p-2 rounded-md hover:bg-slate-100 transition text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Alternar menú"
         >
-          ☰
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
         </button>
-        <h2 className="text-slate-700 font-medium text-base md:text-lg truncate max-w-[180px] sm:max-w-none">
-          Panel de Administración
+        <h2 className="text-slate-600 font-medium text-base md:text-lg hidden sm:block">
+          {user?.rol === "admin" ? "Panel de Administración" : "Tienda MultiCatálogo"}
         </h2>
       </div>
 
-      {/* Derecha: Carrito y Perfil */}
-      <div className="flex items-center gap-4 sm:gap-6">
-        {/* Carrito */}
+      <div className="flex items-center gap-4 md:gap-6">
         <Link
           to="/carrito"
-          className="relative p-2 hover:bg-slate-100 rounded-full transition text-slate-700"
-          title="Ver carrito"
+          className="relative p-2 hover:bg-slate-100 rounded-full transition"
         >
           <span className="text-xl">🛒</span>
           {totalItems > 0 && (
@@ -48,30 +48,31 @@ const Navbar = () => {
           )}
         </Link>
 
-        {/* Usuario y Menú */}
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-block text-sm text-slate-500 max-w-[150px] truncate">
-            {userEmail}
+        <div className="flex items-center gap-2 md:gap-4">
+          <span className="text-xs md:text-sm text-slate-500 hidden sm:block">{user?.email}</span>
+          <span
+            className={`hidden md:inline-block text-xs font-semibold px-2 py-1 rounded-full uppercase ${
+              user?.rol === "admin"
+                ? "bg-amber-100 text-amber-700"
+                : "bg-indigo-100 text-indigo-700"
+            }`}
+          >
+            {user?.rol}
           </span>
 
-          <div className="relative group cursor-pointer py-1">
-            <div className="w-9 h-9 rounded-full bg-slate-200 overflow-hidden border border-slate-300 flex items-center justify-center">
+          <div className="relative group cursor-pointer pb-2">
+            <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300 flex items-center justify-center">
               <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                src="https://fastly.picsum.photos/id/64/4326/2884.jpg?hmac=9_SzX666YRpR_fOyYStXpfSiJ_edO3ghlSRnH2w09Kg"
                 alt="Avatar del usuario"
                 className="w-full h-full object-cover"
               />
             </div>
 
-            {/* Dropdown Logout */}
-            <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-slate-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-              <div className="px-4 py-2 border-b border-slate-100 sm:hidden">
-                <p className="text-xs text-slate-400">Sesión iniciada como</p>
-                <p className="text-xs font-medium text-slate-600 truncate">{userEmail}</p>
-              </div>
+            <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 font-semibold hover:bg-red-50 rounded-b-lg transition-colors"
+                className="w-full text-left px-4 py-2 text-sm text-red-600 font-semibold hover:bg-red-50 rounded-md transition-colors"
               >
                 Cerrar Sesión
               </button>

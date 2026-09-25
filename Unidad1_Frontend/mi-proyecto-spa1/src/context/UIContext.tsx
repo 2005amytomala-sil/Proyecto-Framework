@@ -1,8 +1,11 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+// src/context/UIContext.tsx
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 interface UIContextType {
   isCollapsed: boolean;
+  isMobileOpen: boolean;
   toggleSidebar: () => void;
+  closeMobileMenu: () => void;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -16,29 +19,32 @@ export const useUI = () => {
 };
 
 export const UIProvider = ({ children }: { children: ReactNode }) => {
-  // Inicia en true (80px, solo iconos) si entra desde un celular (< 768px)
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
-    return typeof window !== "undefined" ? window.innerWidth < 768 : false;
-  });
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
 
-  // Detecta cambios de tamaño de pantalla en tiempo real
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true); 
-      } else {
-        setIsCollapsed(false); 
-      }
-    };
+  const toggleSidebar = () => {
+    // Si la pantalla es móvil (< 768px), alterna el menú deslizable
+    if (window.innerWidth < 768) {
+      setIsMobileOpen((prev) => !prev);
+    } else {
+      // En pantallas de escritorio, colapsa el sidebar a iconos
+      setIsCollapsed((prev) => !prev);
+    }
+  };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const toggleSidebar = () => setIsCollapsed((prev) => !prev);
+  const closeMobileMenu = () => {
+    setIsMobileOpen(false);
+  };
 
   return (
-    <UIContext.Provider value={{ isCollapsed, toggleSidebar }}>
+    <UIContext.Provider
+      value={{
+        isCollapsed,
+        isMobileOpen,
+        toggleSidebar,
+        closeMobileMenu,
+      }}
+    >
       {children}
     </UIContext.Provider>
   );
