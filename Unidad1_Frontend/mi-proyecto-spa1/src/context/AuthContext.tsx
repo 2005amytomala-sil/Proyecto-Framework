@@ -1,10 +1,18 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
+// 1. Tipos de rol que maneja la aplicación
+export type Rol = 'admin' | 'cliente';
+
+// 2. Usuario autenticado: correo + rol (lo entrega la API en /api/login)
+export interface Usuario {
+  email: string;
+  rol: Rol;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  userEmail: string | null;
-  token: string | null;
-  login: (email: string, token?: string) => void;
+  user: Usuario | null;
+  login: (usuario: Usuario) => void;
   logout: () => void;
 }
 
@@ -23,37 +31,21 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return Boolean(localStorage.getItem('token'));
-  });
-  const [userEmail, setUserEmail] = useState<string | null>(() => {
-    return localStorage.getItem('userEmail');
-  });
-  const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('token');
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState<Usuario | null>(null);
 
-  const login = (email: string, authToken?: string) => {
+  const login = (usuario: Usuario) => {
     setIsAuthenticated(true);
-    setUserEmail(email);
-    localStorage.setItem('userEmail', email);
-
-    if (authToken) {
-      setToken(authToken);
-      localStorage.setItem('token', authToken);
-    }
+    setUser(usuario);
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    setUserEmail(null);
-    setToken(null);
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('token');
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userEmail, token, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
