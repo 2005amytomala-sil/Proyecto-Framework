@@ -44,6 +44,11 @@ const NAV_ITEMS: NavItem[] = [
     soloAdmin: true,
     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
   },
+  { to: "/mis-pedidos", label: "Mis pedidos", title: "Mis pedidos", icon: "M3 4h18v16H3zM7 8h10M7 12h6" },
+  { to: "/admin/productos", label: "Productos", title: "Gestionar productos", soloAdmin: true, icon: "M4 4h16v16H4zM8 8h8M8 12h8M8 16h5" },
+  { to: "/admin/usuarios", label: "Usuarios", title: "Usuarios", soloAdmin: true, icon: "M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" },
+  { to: "/admin/pedidos", label: "Pedidos", title: "Gestionar pedidos", soloAdmin: true, icon: "M3 6h18M5 6v14h14V6M8 6V4h8v2" },
+  { to: "/admin/liquidaciones", label: "Liquidaciones", title: "Liquidaciones", soloAdmin: true, icon: "M12 3v18M7 7h6a3 3 0 010 6H9a3 3 0 000 6h7" },
 ];
 
 const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) => {

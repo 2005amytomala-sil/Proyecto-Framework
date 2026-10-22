@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { createCheckout, type CheckoutRequest } from '../services/checkoutService';
 
 interface DatosEnvio {
   nombre: string;
@@ -43,20 +44,34 @@ const Checkout = () => {
     setDatos((prev) => ({ ...prev, [campo]: valor }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setProcesando(true);
 
-    // Simulamos el procesamiento del pago con un pequeño retraso
-    setTimeout(() => {
+    try {
+      // Preparar el request para la API
+      const checkoutRequest: CheckoutRequest = {
+        email: datos.email,
+        metodo_pago: datos.metodoPago.toLowerCase().replace(/ /g, "_"),
+        items: cart.map((item) => ({
+          producto_id: item.id,
+          cantidad: item.cantidad,
+          precio_unitario: item.precio,
+        })),
+      };
+
+      // Llamar a la API del backend
+      const response = await createCheckout(checkoutRequest);
+
+      // Crear el pedido para la pantalla de confirmación
       const pedido = {
-        numero: `MC-${Date.now().toString().slice(-6)}`,
+        numero: response.pedido.id.toString(),
         items: cart.map((item) => ({
           nombre: item.nombre,
           cantidad: item.cantidad,
           precio: item.precio,
         })),
-        total: totalPrice,
+        total: response.pedido.total,
         cliente: { nombre: datos.nombre, email: datos.email, ciudad: datos.ciudad },
         fecha: new Date().toLocaleString("es-EC"),
       };
@@ -64,7 +79,12 @@ const Checkout = () => {
       // Vaciamos el carrito y pasamos los datos del pedido a la confirmación
       clearCart();
       navigate("/confirmacion", { state: { pedido } });
-    }, 1200);
+    } catch (error) {
+      console.error("Error al procesar el pedido:", error);
+      alert("Error al procesar el pedido. Por favor intenta nuevamente.");
+    } finally {
+      setProcesando(false);
+    }
   };
 
   return (
