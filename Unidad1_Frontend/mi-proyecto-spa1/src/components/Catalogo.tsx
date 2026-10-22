@@ -8,6 +8,7 @@ const Catalogo = () => {
   const { addToCart } = useCart();
   const [productos, setProductos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   // Lectura del query string (?categoria=...) enviado desde el Storefront
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +24,10 @@ const Catalogo = () => {
         setProductos(data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((reason: unknown) => {
+        setError(reason instanceof Error ? reason.message : 'No se pudo cargar el catálogo');
+        setLoading(false);
+      });
   }, []);
 
   // Filtrado con useMemo: solo se recalcula cuando cambian busqueda/categoria/productos
@@ -51,6 +55,10 @@ const Catalogo = () => {
 
   if (loading) {
     return <div className="text-center p-8">Cargando catálogo...</div>;
+  }
+
+  if (error) {
+    return <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center text-red-700"><p className="font-semibold">No se pudo cargar el catálogo</p><p className="mt-2 text-sm">{error}</p><p className="mt-2 text-xs">Verifica que el backend esté disponible en http://localhost:3000.</p></div>;
   }
 
   return (

@@ -29,3 +29,12 @@ Unidad2_Backend/multicatalogo-backend/multicatalogo-backend
 .env
 *.log
 .DS_Store
+.gocache_*/
+node_modules/
+dist/
+.env
+
+.gocache_*/
+node_modules/
+dist/
+.env

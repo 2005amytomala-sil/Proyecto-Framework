@@ -28,7 +28,7 @@ const Login = () => {
       .then((data) => {
         setError("");
         const rol: Rol = data.rol === "admin" ? "admin" : "cliente";
-        login({ email: data.email, rol });
+        login({ email: data.email, rol, token: data.token });
 
         // Redirige según el rol obtenido
         navigate(rol === "admin" ? "/" : "/tienda");

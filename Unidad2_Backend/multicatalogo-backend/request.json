@@ -1,0 +1,11 @@
+{
+  "email": "usuario1@upse.edu.ec",
+  "metodo_pago": "tarjeta",
+  "items": [
+    {
+      "producto_id": 1,
+      "cantidad": 1,
+      "precio_unitario": 45.00
+    }
+  ]
+}
