@@ -22,10 +22,12 @@ FROM alpine:latest
 # Instalamos ca-certificates para las peticiones HTTPS.
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /root/
+RUN adduser -D -u 10001 appuser
+WORKDIR /app
 
 # Copiamos el binario desde el builder.
 COPY --from=builder /app/main .
+USER appuser
 
 # Exponemos el puerto 3000.
 EXPOSE 3000

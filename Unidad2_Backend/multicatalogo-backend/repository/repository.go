@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	// Importamos fmt para formatear strings.
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	// Importamos nuestros modelos.
@@ -14,7 +13,8 @@ import (
 	"multicatalogo-backend/models"
 )
 
-var ErrNotFound = errors.New("registro no encontrado")
+// Mismo error que interfaces.ErrNotFound, para que errors.Is funcione en los controladores.
+var ErrNotFound = interfaces.ErrNotFound
 
 // Repository encapsula las operaciones de acceso a datos.
 type Repository struct {

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: multicatalogo-backend
+    runtime: docker
+    plan: free
+    rootDir: Unidad2_Backend/multicatalogo-backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_ORIGINS
+        sync: false

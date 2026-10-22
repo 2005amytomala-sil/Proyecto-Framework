@@ -2,6 +2,9 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, type Rol } from "../context/AuthContext";
+import { apiFetch } from "../services/http";
+
+const SHOW_DEMO = import.meta.env.VITE_SHOW_DEMO_CREDENTIALS === "true";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -16,9 +19,8 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    fetch("http://localhost:3000/api/login", {
+    apiFetch("/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     })
       .then((response) => {
@@ -95,11 +97,13 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1">
-          <p className="font-semibold text-slate-700">Cuentas de prueba:</p>
-          <p>👑 Admin: <span className="font-mono">admin@upse.edu.ec / 123456</span></p>
-          <p>🛍️ Cliente: <span className="font-mono">cliente@upse.edu.ec / 123456</span></p>
-        </div>
+        {SHOW_DEMO && (
+          <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 space-y-1">
+            <p className="font-semibold text-slate-700">Cuentas de prueba:</p>
+            <p>👑 Admin: <span className="font-mono">admin@upse.edu.ec / 123456</span></p>
+            <p>🛍️ Cliente: <span className="font-mono">cliente@upse.edu.ec / 123456</span></p>
+          </div>
+        )}
       </div>
     </div>
   );

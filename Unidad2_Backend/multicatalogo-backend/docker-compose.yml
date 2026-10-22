@@ -7,7 +7,7 @@ services:
       - POSTGRES_PASSWORD=multicatalogo123
       - POSTGRES_DB=multicatalogo
     ports:
-      - "5434:5432"
+      - "127.0.0.1:5434:5432"
     volumes:
       - postgres_data_v16:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -23,7 +23,7 @@ services:
     image: redis:alpine
     container_name: multicatalogo-redis
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -37,6 +37,8 @@ services:
     ports:
       - "3000:3000"
     environment:
+      - APP_ENV=dev
+      - JWT_SECRET=${JWT_SECRET:-clave-solo-para-desarrollo-local-0123456789}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DB_HOST=postgres

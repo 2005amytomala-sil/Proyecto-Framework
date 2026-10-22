@@ -16,7 +16,9 @@ import (
 
 func main() {
 	config.LoadEnv()
-	utils.ConfigureJWTSecret()
+	if err := utils.ConfigureJWTSecret(); err != nil {
+		log.Fatal(err)
+	}
 	config.InitPostgres()
 	if config.DB == nil {
 		log.Fatal("PostgreSQL no está disponible; no se inicia el backend con datos simulados")

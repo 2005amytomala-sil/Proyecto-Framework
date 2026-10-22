@@ -5,6 +5,7 @@ import (
 	// Importamos fmt para formatear strings.
 	"fmt"
 	"os"
+
 	// Importamos time para manejar tiempos de expiración.
 	"time"
 
@@ -15,10 +16,19 @@ import (
 // JWTSecret es la clave secreta para firmar tokens JWT.
 var JWTSecret = []byte("multicatalogo-secret-key-change-in-production")
 
-func ConfigureJWTSecret() {
-	if secret := os.Getenv("JWT_SECRET"); secret != "" {
+// ConfigureJWTSecret lee JWT_SECRET. Fuera de APP_ENV=dev es obligatorio y debe
+// tener al menos 32 caracteres; asi nunca se usa la clave por defecto publica.
+func ConfigureJWTSecret() error {
+	secret := os.Getenv("JWT_SECRET")
+	if os.Getenv("APP_ENV") != "dev" {
+		if len(secret) < 32 {
+			return fmt.Errorf("JWT_SECRET es obligatorio (minimo 32 caracteres) cuando APP_ENV no es dev")
+		}
+	}
+	if secret != "" {
 		JWTSecret = []byte(secret)
 	}
+	return nil
 }
 
 // Claims representa los claims del token JWT.

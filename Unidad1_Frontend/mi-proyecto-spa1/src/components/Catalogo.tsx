@@ -58,7 +58,7 @@ const Catalogo = () => {
   }
 
   if (error) {
-    return <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center text-red-700"><p className="font-semibold">No se pudo cargar el catálogo</p><p className="mt-2 text-sm">{error}</p><p className="mt-2 text-xs">Verifica que el backend esté disponible en http://localhost:3000.</p></div>;
+    return <div className="rounded-lg border border-red-200 bg-red-50 p-8 text-center text-red-700"><p className="font-semibold">No se pudo cargar el catálogo</p><p className="mt-2 text-sm">{error}</p><p className="mt-2 text-xs">Verifica tu conexión o que el servidor esté disponible (si estaba inactivo, puede tardar hasta 1 minuto en despertar).</p></div>;
   }
 
   return (
