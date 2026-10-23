@@ -162,6 +162,31 @@ func (bc *BackofficeController) AdminUsers(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"data": out, "page": page, "limit": limit, "total": total})
 }
 
+func (bc *BackofficeController) UpdateUserState(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return apiError(c, 400, "ID inválido", nil)
+	}
+	var in struct {
+		Activo *bool `json:"activo"`
+	}
+	if err = c.BodyParser(&in); err != nil || in.Activo == nil {
+		return apiError(c, 400, "El estado activo es obligatorio", nil)
+	}
+	if id == 1 && !*in.Activo {
+		return apiError(c, 400, "No se puede desactivar al administrador principal", nil)
+	}
+	res, err := bc.db.Exec(`UPDATE usuarios SET activo=$1 WHERE id=$2`, *in.Activo, id)
+	if err != nil {
+		return apiError(c, 500, "No se pudo actualizar el usuario", nil)
+	}
+	count, _ := res.RowsAffected()
+	if count == 0 {
+		return apiError(c, 404, "Usuario no encontrado", nil)
+	}
+	return c.JSON(fiber.Map{"message": "Estado actualizado", "activo": *in.Activo})
+}
+
 func (bc *BackofficeController) MyOrders(c *fiber.Ctx) error {
 	email, _ := c.Locals("email").(string)
 	return bc.listOrders(c, `WHERE p.email=$1`, email)
@@ -367,7 +392,7 @@ func (bc *BackofficeController) Liquidate(c *fiber.Ctx) error {
 	return c.Status(201).JSON(fiber.Map{"id": id, "referido_id": in.ReferidoID, "total": total, "estado": "pagada"})
 }
 func (bc *BackofficeController) Liquidations(c *fiber.Ctx) error {
-	rows, err := bc.db.Query(`SELECT id,referido_id,total,estado,creado_en,pagada_en FROM liquidaciones ORDER BY creado_en DESC`)
+	rows, err := bc.db.Query(`SELECT l.id,l.referido_id,r.nombre,r.email,l.total,l.estado,l.creado_en,l.pagada_en FROM liquidaciones l JOIN referidos r ON r.id=l.referido_id ORDER BY l.creado_en DESC`)
 	if err != nil {
 		return apiError(c, 500, "Error al consultar liquidaciones", nil)
 	}
@@ -375,13 +400,14 @@ func (bc *BackofficeController) Liquidations(c *fiber.Ctx) error {
 	out := make([]fiber.Map, 0)
 	for rows.Next() {
 		var id, rid int
+		var name, email string
 		var total float64
 		var state string
 		var created, payed sql.NullTime
-		if err := rows.Scan(&id, &rid, &total, &state, &created, &payed); err != nil {
+		if err := rows.Scan(&id, &rid, &name, &email, &total, &state, &created, &payed); err != nil {
 			return apiError(c, 500, "Error al leer liquidaciones", nil)
 		}
-		out = append(out, fiber.Map{"id": id, "referido_id": rid, "total": total, "estado": state, "creado_en": created.Time, "pagada_en": payed.Time})
+		out = append(out, fiber.Map{"id": id, "referido_id": rid, "nombre": name, "email": email, "total": total, "estado": state, "creado_en": created.Time, "pagada_en": payed.Time})
 	}
 	return c.JSON(out)
 }
@@ -472,7 +498,7 @@ WHERE c.estado='pendiente' GROUP BY c.referido_id,r.nombre,r.email ORDER BY 4 DE
 }
 
 func (bc *BackofficeController) TopReferidos(c *fiber.Ctx) error {
-	rows, err := bc.db.Query(`SELECT r.id,r.email,r.nombre,COALESCE(r.ventas,0),COALESCE(SUM(c.monto),0) FROM referidos r LEFT JOIN comisiones c ON c.referido_id=r.id AND c.estado<>'revertida' GROUP BY r.id,r.email,r.nombre,r.ventas ORDER BY 4 DESC`)
+	rows, err := bc.db.Query(`SELECT r.id,r.email,r.nombre,r.nivel,COALESCE(r.ventas,0),COALESCE(SUM(c.monto),0) FROM referidos r LEFT JOIN comisiones c ON c.referido_id=r.id AND c.estado<>'revertida' GROUP BY r.id,r.email,r.nombre,r.nivel,r.ventas ORDER BY 5 DESC`)
 	if err != nil {
 		return apiError(c, 500, "Error en reporte", nil)
 	}
@@ -481,11 +507,12 @@ func (bc *BackofficeController) TopReferidos(c *fiber.Ctx) error {
 	for rows.Next() {
 		var id int
 		var email, name string
+		var level int
 		var sales, commissions float64
-		if err := rows.Scan(&id, &email, &name, &sales, &commissions); err != nil {
+		if err := rows.Scan(&id, &email, &name, &level, &sales, &commissions); err != nil {
 			return apiError(c, 500, "Error al leer reporte", nil)
 		}
-		out = append(out, fiber.Map{"referido_id": id, "email": email, "nombre": name, "ventas": sales, "comisiones": commissions})
+		out = append(out, fiber.Map{"referido_id": id, "email": email, "nombre": name, "nivel": level, "ventas": sales, "comisiones": commissions})
 	}
 	return c.JSON(out)
 }

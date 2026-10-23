@@ -50,6 +50,7 @@ func SetupRoutes(
 	app.Delete("/api/productos/:id", middleware.RequireAuth, admin, backofficeController.DeleteProduct)
 	app.Get("/api/admin/productos", middleware.RequireAuth, admin, backofficeController.AdminProducts)
 	app.Get("/api/admin/usuarios", middleware.RequireAuth, admin, backofficeController.AdminUsers)
+	app.Patch("/api/admin/usuarios/:id/estado", middleware.RequireAuth, admin, backofficeController.UpdateUserState)
 	app.Get("/api/pedidos/mios", middleware.RequireAuth, backofficeController.MyOrders)
 	app.Get("/api/pedidos", middleware.RequireAuth, admin, backofficeController.AdminOrders)
 	app.Get("/api/pedidos/:id", middleware.RequireAuth, backofficeController.OrderDetail)

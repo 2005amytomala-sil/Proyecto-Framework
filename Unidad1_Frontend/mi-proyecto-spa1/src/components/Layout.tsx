@@ -8,7 +8,7 @@ const Layout = () => {
   const { isCollapsed, isMobileOpen, toggleSidebar, closeMobileMenu } = useUI();
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-sky-50/60">
+    <div className="relative flex h-screen overflow-hidden bg-violet-50/50">
       {/* Fondo oscuro para cerrar al tocar fuera en pantallas móviles */}
       {isMobileOpen && (
         <div
@@ -28,7 +28,7 @@ const Layout = () => {
         {/* Navbar ahora sí recibe toggleSidebar para accionar el botón */}
         <Navbar toggleSidebar={toggleSidebar} />
         
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-sky-50/70 via-slate-50 to-indigo-50/30 p-4 md:p-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-violet-100/60 via-slate-50 to-fuchsia-50/40 p-4 md:p-8">
           <Outlet />
         </main>
       </div>
