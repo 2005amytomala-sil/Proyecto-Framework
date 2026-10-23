@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* Tratamiento visual común para las tarjetas y tablas del back-office. */
+main .bg-white { background-color: rgb(255 255 255 / 0.94); }
+main .border-slate-200 { border-color: rgb(221 214 254 / 0.75); }
+main .border-slate-100 { border-color: rgb(237 233 254 / 0.9); }
+main .bg-slate-50 { background-color: rgb(245 243 255 / 0.72); }
+main .shadow-sm { box-shadow: 0 7px 22px rgb(99 64 150 / 0.10); }
+main .border-indigo-100 { border-color: rgb(221 214 254 / 0.85); }
+main [class~="bg-indigo-50"] { background-color: rgb(238 242 255 / 0.82); }
+main [class~="bg-indigo-50/70"] { background: linear-gradient(135deg, rgb(237 233 254 / 0.92), rgb(238 242 255 / 0.78)); }
+main [class~="bg-indigo-100"] { background-color: rgb(224 231 255 / 0.9); }
+main table thead { background-color: rgb(245 243 255 / 0.9); }
+main table tbody tr { transition: background-color 150ms ease; }
+main table tbody tr:hover { background-color: rgb(245 243 255 / 0.72); }

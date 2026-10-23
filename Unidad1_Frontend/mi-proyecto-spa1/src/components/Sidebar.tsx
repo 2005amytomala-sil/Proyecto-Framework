@@ -41,7 +41,6 @@ const NAV_ITEMS: NavItem[] = [
     to: "/mi-red",
     label: "Mi Red",
     title: "Mi Red",
-    soloAdmin: true,
     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
   },
   { to: "/mis-pedidos", label: "Mis pedidos", title: "Mis pedidos", icon: "M3 4h18v16H3zM7 8h10M7 12h6" },
@@ -61,16 +60,21 @@ const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) =
   return (
     <aside
       className={`
-        fixed inset-y-0 left-0 z-50 transform bg-gradient-to-br from-slate-800 via-blue-950 to-slate-900 text-white flex flex-col transition-all duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 transform bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 text-white flex flex-col transition-all duration-300 ease-in-out
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         w-64
         md:relative md:translate-x-0
         ${isCollapsed ? "md:w-20" : "md:w-64"}
       `}
     >
-      <div className={`p-4 md:p-6 text-xl font-bold border-b border-slate-300 flex items-center ${isCollapsed ? 'md:justify-center' : 'justify-start'} whitespace-nowrap`}>
+      <div className={`p-4 md:p-6 text-xl font-bold border-b border-violet-300/20 ${isCollapsed ? 'md:text-center' : ''}`}>
         <span className="md:hidden">MultiCatálogo</span>
         <span className="hidden md:inline">{isCollapsed ? "MC" : "MultiCatálogo"}</span>
+        {!isCollapsed ? (
+          <p className="mt-1 text-[11px] font-medium tracking-wide text-violet-200">Amy T. Silvestre</p>
+        ) : (
+          <p className="mt-1 text-[10px] font-bold tracking-widest text-violet-200">ATS</p>
+        )}
       </div>
 
       <nav className="flex-1 p-3 space-y-2 overflow-y-auto">
@@ -88,8 +92,8 @@ const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) =
               onClick={closeMobileMenu}
               className={`flex items-center gap-3 p-3 rounded transition ${
                 esActivo
-                  ? "bg-indigo-800 text-white"
-                  : "hover:bg-slate-800"
+                  ? "bg-violet-600/80 text-white shadow-lg shadow-violet-950/20"
+                  : "hover:bg-violet-800/40"
               } ${isCollapsed ? 'md:justify-center' : ''}`}
               title={item.title}
             >
@@ -104,7 +108,7 @@ const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) =
         })}
       </nav>
 
-      <div className="p-3 border-t border-slate-700 text-xs text-slate-300">
+      <div className="p-3 border-t border-violet-300/20 text-xs text-slate-300">
         {isCollapsed ? (
           <p className="text-center uppercase">{user?.rol}</p>
         ) : (
@@ -112,9 +116,6 @@ const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) =
             Conectado como <span className="font-semibold uppercase">{user?.rol}</span>
           </p>
         )}
-        <p className={`mt-2 border-t border-slate-700 pt-2 text-[11px] text-slate-400 ${isCollapsed ? 'text-center' : ''}`} title="Autora: Amy T. Silvestre">
-          {isCollapsed ? "ATS" : "Estudiante: Amy T. Silvestre"}
-        </p>
       </div>
     </aside>
   );

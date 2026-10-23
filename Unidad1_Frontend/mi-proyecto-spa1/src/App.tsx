@@ -75,16 +75,18 @@ function App() {
               {/* Rutas protegidas (requieren login) */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Layout />}>
-                  {/* Solo administrador: Dashboard y Red multinivel */}
+                  {/* Funciones administrativas */}
                   <Route element={<AdminRoute />}>
                     <Route index element={<Dashboard />} />
-                    <Route path="mi-red" element={<MiRed />} />
                     <Route path="admin/productos" element={<Backoffice mode="productos" />} />
                     <Route path="admin/usuarios" element={<Backoffice mode="usuarios" />} />
                     <Route path="admin/pedidos" element={<Backoffice mode="pedidos" />} />
                     <Route path="admin/liquidaciones" element={<Backoffice mode="liquidaciones" />} />
                     <Route path="admin/reportes" element={<Backoffice mode="reportes" />} />
                   </Route>
+
+                  {/* Cada usuario autenticado consulta su propia red */}
+                  <Route path="mi-red" element={<MiRed />} />
 
                   {/* Ambos roles: flujo de compra en línea */}
                   <Route path="tienda" element={<Storefront />} />
@@ -93,7 +95,7 @@ function App() {
                   <Route path="carrito" element={<Carrito />} />
                   <Route path="checkout" element={<Checkout />} />
                   <Route path="confirmacion" element={<Confirmacion />} />
-                  <Route path="mis-pedidos" element={<Backoffice mode="pedidos" />} />
+                  <Route path="mis-pedidos" element={<Backoffice mode="pedidos" ownOnly />} />
                   <Route path="mis-comisiones" element={<Backoffice mode="comisiones" />} />
                 </Route>
               </Route>

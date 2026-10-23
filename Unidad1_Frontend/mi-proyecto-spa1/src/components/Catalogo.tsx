@@ -69,18 +69,18 @@ const Catalogo = () => {
       </p>
 
       {/* ===== BARRA DE BÚSQUEDA Y FILTROS ===== */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-4 mb-8 rounded-2xl border border-violet-200 bg-white/80 p-4 shadow-[0_6px_20px_rgba(99,64,150,0.08)]">
         <input
           type="text"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar por nombre o descripción..."
-          className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
+          className="flex-1 px-4 py-3 rounded-xl border border-violet-200 bg-violet-50/40 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
         />
         <select
           value={categoria}
           onChange={(e) => handleCategoriaChange(e.target.value)}
-          className="px-4 py-3 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
+          className="px-4 py-3 rounded-xl border border-violet-200 bg-violet-50/40 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
         >
           <option value="Todas">Todas las categorías</option>
           {categorias.map((cat) => (
@@ -113,13 +113,13 @@ const Catalogo = () => {
           {productosFiltrados.map((prod) => (
             <div
               key={prod.id}
-              className="bg-white rounded-lg overflow-hidden border border-slate-200 shadow-sm flex flex-col"
+              className="group bg-white/95 rounded-2xl overflow-hidden border border-violet-200 shadow-[0_8px_24px_rgba(99,64,150,0.13)] flex flex-col transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(99,64,150,0.20)]"
             >
               <Link to={`/producto/${prod.id}`}>
                 <img
                   src={prod.img}
                   alt={prod.nombre}
-                  className="w-full h-40 object-cover hover:opacity-90 transition"
+                  className="w-full h-44 object-cover transition duration-300 group-hover:scale-105"
                 />
               </Link>
               <div className="p-4 flex flex-col flex-1">
@@ -131,13 +131,13 @@ const Catalogo = () => {
                     {prod.nombre}
                   </h3>
                 </Link>
-                <p className="text-indigo-600 font-bold mt-2 mb-4">
+                <p className="text-violet-700 font-bold mt-2 mb-4">
                   ${prod.precio.toFixed(2)}
                 </p>
 
                 <button
                   onClick={() => addToCart(prod)}
-                  className="mt-auto w-full bg-slate-900 text-white py-2 rounded text-sm hover:bg-indigo-600 transition"
+                  className="mt-auto w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-violet-200 transition hover:from-indigo-700 hover:to-fuchsia-600"
                 >
                   Añadir al Carrito
                 </button>
