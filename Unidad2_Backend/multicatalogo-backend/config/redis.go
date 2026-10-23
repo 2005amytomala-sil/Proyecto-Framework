@@ -5,9 +5,11 @@ import (
 	// Importamos el paquete context para manejar timeouts y cancelaciones.
 	"context"
 	"fmt"
+
 	// Importamos el paquete os para leer variables de entorno.
 	"os"
 	"time"
+
 	// Importamos el cliente oficial de Redis para Go.
 	"github.com/redis/go-redis/v9"
 )
@@ -30,11 +32,22 @@ func InitRedis() {
 	}
 
 	// Inicializamos el cliente de Redis con la configuración.
-	RedisClient = redis.NewClient(&redis.Options{
+	options := &redis.Options{
 		Addr:     redisHost + ":" + redisPort,
-		Password: "", // Sin contraseña por defecto
-		DB:       0,  // Base de datos 0
-	})
+		Password: os.Getenv("REDIS_PASSWORD"), // Vacío en local
+		DB:       0,                           // Base de datos 0
+	}
+	// Servicios gestionados (Render Key Value, Upstash) entregan una sola URL:
+	// redis://... o rediss://... (con TLS). Si existe, tiene prioridad.
+	if url := os.Getenv("REDIS_URL"); url != "" {
+		parsed, err := redis.ParseURL(url)
+		if err != nil {
+			fmt.Println("REDIS_URL inválida; se atenderán las lecturas desde PostgreSQL:", err.Error())
+			return
+		}
+		options = parsed
+	}
+	RedisClient = redis.NewClient(options)
 
 	// Verificamos la conexión con un ping.
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
