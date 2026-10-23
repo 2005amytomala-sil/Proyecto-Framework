@@ -4,6 +4,7 @@ package config
 import (
 	"bufio"
 	"context"
+
 	// Importamos el paquete database/sql para manejar conexiones a bases de datos.
 	"database/sql"
 	// Importamos el paquete fmt para formatear strings.
@@ -62,8 +63,8 @@ func InitPostgres() {
 	}
 
 	dbPassword := os.Getenv("DB_PASSWORD")
-	if dbPassword == "" {
-		dbPassword = "multicatalogo123"
+	if dbPassword == "" && os.Getenv("APP_ENV") == "dev" {
+		dbPassword = "multicatalogo123" // solo para desarrollo local
 	}
 
 	dbName := os.Getenv("DB_NAME")
@@ -72,8 +73,16 @@ func InitPostgres() {
 	}
 
 	// Construimos el string de conexión (DSN).
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
+	sslMode := os.Getenv("DB_SSLMODE")
+	if sslMode == "" {
+		sslMode = "disable"
+	}
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		dbHost, dbPort, dbUser, dbPassword, dbName, sslMode)
+	// Proveedores gestionados (Neon, Render, etc.) entregan una sola URL de conexion.
+	if url := os.Getenv("DATABASE_URL"); url != "" {
+		dsn = url
+	}
 
 	// Abrimos la conexión a la base de datos.
 	var err error

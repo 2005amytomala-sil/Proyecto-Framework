@@ -37,7 +37,6 @@ func RequireAuth(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{
 			"status":  401,
 			"message": "Token inválido o expirado",
-			"details": err.Error(),
 		})
 	}
 
