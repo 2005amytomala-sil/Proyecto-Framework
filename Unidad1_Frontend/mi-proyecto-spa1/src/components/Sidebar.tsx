@@ -112,6 +112,9 @@ const Sidebar = ({ isCollapsed, isMobileOpen, closeMobileMenu }: SidebarProps) =
             Conectado como <span className="font-semibold uppercase">{user?.rol}</span>
           </p>
         )}
+        <p className={`mt-2 border-t border-slate-700 pt-2 text-[11px] text-slate-400 ${isCollapsed ? 'text-center' : ''}`} title="Autora: Amy T. Silvestre">
+          {isCollapsed ? "ATS" : "Estudiante: Amy T. Silvestre"}
+        </p>
       </div>
     </aside>
   );
